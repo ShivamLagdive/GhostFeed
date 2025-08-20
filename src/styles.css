@@ -1,0 +1,66 @@
+/*
+ * GhostFeed - YouTube Distraction Removal Styles 
+ * - Master toggle: data-ghostfeed-master-enabled
+ * - Feature toggles: data-ghostfeed-[feature-name] (e.g., data-ghostfeed-hide-home)
+ */
+
+/* Master toggle - only apply rules when master is enabled */
+
+/* Hide Home feed */
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-home="true"] ytd-rich-grid-renderer #contents,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-home="true"] ytd-rich-grid-renderer #contents{
+  display: none !important;
+}
+
+/* Hide Shorts */
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] grid-shelf-view-model,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] a[title="Shorts"],
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] ytd-mini-guide-entry-renderer[aria-label="Shorts"],
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] ytd-rich-item-renderer:has(a[href*="/shorts/"]),
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] ytd-compact-video-renderer:has(a[href*="/shorts/"]),
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] ytd-video-meta-block:has(a[href*="/shorts/"]),
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] ytd-reel-video-renderer,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] ytd-shorts-shelf-renderer,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-shorts="true"] .ytd-reel-shelf-renderer {
+  display: none !important;
+}
+
+/* Hide comments */
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-comments="true"] #comments,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-comments="true"] ytd-comments,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-comments="true"] #chat,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-comments="true"] ytd-live-chat-frame {
+  display: none !important;
+}
+
+
+/* Hide ONLY recommendations (keep playlists & up next) */
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-sidebar="true"] #secondary #related,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-sidebar="true"] #secondary ytd-watch-next-secondary-results-renderer:not([playlist-id]) {
+  display: none !important;
+}
+
+/* Hide endscreen */
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-endscreen="true"] .ytp-endscreen-content,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-endscreen="true"] .ytp-ce-element {
+  display: none !important;
+}
+
+
+/* Blur thumbnails */
+
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-blur-thumbs="true"] img.ytCoreImageHost{
+  filter: blur(12px) saturate(0.6) !important;
+  transition: filter 0.2s ease !important;
+}
+
+/* Hide recommendations shelves */
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-recs="true"] ytd-rich-shelf-renderer,
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-recs="true"] ytd-two-column-browse-results-renderer #contents ytd-shelf-renderer {
+  display: none !important;
+}
+
+/* Hide left guide */
+body[data-ghostfeed-master-enabled="true"][data-ghostfeed-hide-guide="true"] #guide {
+  display: none !important;
+}

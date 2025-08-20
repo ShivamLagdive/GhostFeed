@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GhostFeed</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        margin: 0;
+        padding: 10px;
+        width: 280px;
+        max-height: 600px;
+        overflow-y: auto;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        color: #2d3748;
+        line-height: 1.4;
+        font-size: 13px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 10px;
+        padding: 8px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+        border: 1px solid rgba(102, 126, 234, 0.15);
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+      }
+
+      .header-logo {
+        width: 24px;
+        height: 24px;
+        background: url('data:image/svg+xml;charset=UTF-8,%3Csvg width="28" height="28" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3ClinearGradient id="ghostGradient" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23667eea;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23764ba2;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d="M 64 20 C 45 20, 30 35, 30 54 L 30 85 C 30 90, 32 95, 36 98 L 40 100 C 42 102, 45 102, 47 100 L 50 97 C 52 95, 55 95, 57 97 L 60 100 C 62 102, 65 102, 67 100 L 70 97 C 72 95, 75 95, 77 97 L 80 100 C 82 102, 85 102, 87 100 L 92 98 C 96 95, 98 90, 98 85 L 98 54 C 98 35, 83 20, 64 20 Z" fill="url(%23ghostGradient)"%3E%3C/path%3E%3Ccircle cx="52" cy="50" r="6" fill="%232d3748"/%3E%3Ccircle cx="76" cy="50" r="6" fill="%232d3748"/%3E%3Ccircle cx="54" cy="48" r="2" fill="%23ffffff"/%3E%3Ccircle cx="78" cy="48" r="2" fill="%23ffffff"/%3E%3Cellipse cx="64" cy="65" rx="8" ry="6" fill="%232d3748"/%3E%3Cellipse cx="64" cy="63" rx="6" ry="4" fill="url(%23ghostGradient)"/%3E%3C/svg%3E') no-repeat center;
+        background-size: contain;
+        filter: drop-shadow(0 1px 3px rgba(102, 126, 234, 0.3));
+      }
+
+      h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 16px;
+        color: #667eea;
+        text-shadow: 0 1px 2px rgba(102, 126, 234, 0.1);
+      }
+
+      .grid {
+        display: grid;
+        gap: 6px;
+      }
+
+      .card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid rgba(102, 126, 234, 0.12);
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 2px 12px rgba(102, 126, 234, 0.08);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .card:hover {
+        border-color: rgba(102, 126, 234, 0.25);
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+        transform: translateY(-1px);
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 2px 0;
+        min-height: 20px;
+      }
+
+      .row:first-child {
+        margin-top: 0;
+      }
+
+      .row:last-child {
+        margin-bottom: 0;
+      }
+
+      label {
+        font-size: 12px;
+        font-weight: 500;
+        color: #4a5568;
+        cursor: pointer;
+        flex: 1;
+        transition: color 0.2s ease;
+      }
+
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #667eea;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .speed-control {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .speed-presets {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 4px;
+      }
+
+      .speed-btn {
+        background: #f3f4f6;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 6px 2px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+      }
+
+      .speed-btn:hover {
+        background: #e5e7eb;
+        border-color: #9ca3af;
+      }
+
+      .speed-btn.active {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+      }
+
+      .speed-custom {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 8px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+      }
+
+      .speed-custom input[type="range"] {
+        flex: 1;
+        height: 3px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        outline: none;
+        accent-color: #3b82f6;
+      }
+
+      .speed-value {
+        font-size: 11px;
+        font-weight: 600;
+        color: #3b82f6;
+        min-width: 28px;
+        text-align: center;
+      }
+
+      .speed-custom-input {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 8px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+      }
+
+      .speed-custom-input input[type="number"] {
+        width: 50px;
+        padding: 2px 4px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      .speed-custom-input label {
+        font-size: 11px;
+        margin: 0;
+        flex: none;
+      }
+
+      .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .master-toggle {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .master-toggle::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .master-toggle:hover::before {
+        opacity: 1;
+      }
+
+      .master-toggle:hover {
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .master-toggle label {
+        color: white;
+        font-weight: 600;
+      }
+
+      .watermark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 6px;
+        margin-top: 6px;
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.05) 0%,
+          rgba(118, 75, 162, 0.05) 100%
+        );
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        border-radius: 6px;
+        font-size: 9px;
+        color: #667eea;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .watermark:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.1) 0%,
+          rgba(118, 75, 162, 0.1) 100%
+        );
+        border-color: rgba(102, 126, 234, 0.2);
+        transform: translateY(-1px);
+      }
+
+      .watermark-icon {
+        width: 14px;
+        height: 14px;
+        background: url('data:image/svg+xml;charset=UTF-8,%3Csvg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3ClinearGradient id="miniGhost" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23667eea;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23764ba2;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d="M 8 2 C 5.5 2, 3.5 4, 3.5 6.5 L 3.5 11 C 3.5 11.5, 3.7 12, 4 12.2 L 4.5 12.5 C 4.7 12.7, 5 12.7, 5.2 12.5 L 5.5 12.2 C 5.7 12, 6 12, 6.2 12.2 L 6.5 12.5 C 6.7 12.7, 7 12.7, 7.2 12.5 L 7.5 12.2 C 7.7 12, 8 12, 8.2 12.2 L 8.5 12.5 C 8.7 12.7, 9 12.7, 9.2 12.5 L 9.5 12.2 C 9.7 12, 10 12, 10.2 12.2 L 10.5 12.5 C 10.7 12.7, 11 12.7, 11.2 12.5 L 11.5 12.2 C 12 12, 12.5 11.5, 12.5 11 L 12.5 6.5 C 12.5 4, 10.5 2, 8 2 Z" fill="url(%23miniGhost)"/%3E%3Ccircle cx="6.5" cy="6" r="0.8" fill="%232d3748"/%3E%3Ccircle cx="9.5" cy="6" r="0.8" fill="%232d3748"/%3E%3Ccircle cx="6.7" cy="5.8" r="0.3" fill="%23ffffff"/%3E%3Ccircle cx="9.7" cy="5.8" r="0.3" fill="%23ffffff"/%3E%3Cellipse cx="8" cy="8.5" rx="1" ry="0.8" fill="%232d3748"/%3E%3Cellipse cx="8" cy="8.3" rx="0.7" ry="0.5" fill="url(%23miniGhost)"/%3E%3C/svg%3E')
+          no-repeat center;
+        background-size: contain;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+      }
+
+      .watermark:hover .watermark-icon {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-logo"></div>
+      <h3>GhostFeed</h3>
+    </div>
+    <div class="grid">
+      <div class="card master-toggle">
+        <div class="row">
+          <label for="masterEnabled">Enable on YouTube</label>
+          <input type="checkbox" id="masterEnabled" />
+        </div>
+      </div>
+
+      <div id="controls">
+        <div class="card">
+          <div class="row">
+            <label for="hideHome">Hide Home feed</label
+            ><input type="checkbox" id="hideHome" />
+          </div>
+          <div class="row">
+            <label for="hideShorts">Hide Shorts</label
+            ><input type="checkbox" id="hideShorts" />
+          </div>
+          <!-- <div class="row">
+            <label for="hideRecs">Hide recommendations</label
+            ><input type="checkbox" id="hideRecs" />
+          </div> -->
+          <div class="row">
+            <label for="hideSidebar">Hide right sidebar</label
+            ><input type="checkbox" id="hideSidebar" />
+          </div>
+          <div class="row">
+            <label for="hideComments">Hide comments & live chat</label
+            ><input type="checkbox" id="hideComments" />
+          </div>
+          <div class="row">
+            <label for="hideEndscreen">Hide endscreen</label
+            ><input type="checkbox" id="hideEndscreen" />
+          </div>
+          <div class="row">
+            <label for="hideGuide">Hide left guide</label
+            ><input type="checkbox" id="hideGuide" />
+          </div>
+          <div class="row">
+            <label for="blurThumbs">Blur thumbnails</label
+            ><input type="checkbox" id="blurThumbs" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div
+            style="
+              text-align: center;
+              padding: 6px;
+              color: #667eea;
+              font-size: 11px;
+              background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+              border-radius: 6px;
+              border: 1px solid rgba(102, 126, 234, 0.1);
+            "
+          >
+            <strong style="color: #4a5568;">Playback Speed Control</strong><br />
+            Enhanced with speeds up to 16× (alongside captions button)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="https://github.com/ShivamLagdive/GhostFeed" target="_blank" class="watermark">
+      <div class="watermark-icon"></div>
+      <span>YouTube, minus the distractions</span>
+    </a>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
